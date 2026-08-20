@@ -108,6 +108,7 @@ int64_t alarm_callback(alarm_id_t id, __unused void *repeatptr)
         gpio_put(PICO_LED, 0);                              // or turn off if no stream detected
 #endif // PICO_LED
     led_state = led_state & LED_STREAM_MASK;                // Zero out the stream LED colour bits
+    //led_state = GREEN;
     return *(const uint32_t*)repeatptr;                     // return value is repeat time
 }
 
@@ -159,7 +160,8 @@ int main()
 #ifdef DEBUG
     sleep_ms(5000);                                         // allow time for USB serial to connect
 #else
-    sleep_ms(500);                                          // allow time for clocks etc. to settle
+    //sleep_ms(500);                                          // allow time for clocks etc. to settle
+    sleep_ms(2000);                                          // CC - we are in absolutely no rush here. Let everything get power properly.
 #endif // DEBUG
 
 #ifdef WS2812
@@ -175,10 +177,18 @@ int main()
     printf("Selector = %d\n", selector);
 #endif // DEBUG
 
+#ifdef USE_SELECTOR
     if(selector & 0b100)                                    // Most significant switch bit selects Ultranet input stream pin
         ultranet_pio_init(UNET_PIO, UNET_SM, UNETH_PIN);    // initialise and start ultranet state machine
     else
         ultranet_pio_init(UNET_PIO, UNET_SM, UNETL_PIN);    // initialise and start ultranet state machine
+#else
+    #ifdef HIGH_CHANNELS
+        ultranet_pio_init(UNET_PIO, UNET_SM, UNETH_PIN);
+    #else
+        ultranet_pio_init(UNET_PIO, UNET_SM, UNETL_PIN);
+    #endif
+#endif
 
     multicore_launch_core1(core1_entry);                    // start core 1
 

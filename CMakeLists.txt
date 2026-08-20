@@ -15,15 +15,15 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.1.0)
-set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
+set(sdkVersion 2.3.0)
+set(toolchainVersion 15_2_Rel1)
+set(picotoolVersion 2.3.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
-set(PICO_BOARD pico CACHE STRING "Board type")
+set(PICO_BOARD waveshare_rp2040_zero CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -68,6 +68,6 @@ target_link_libraries(Ultranet
 pico_add_extra_outputs(Ultranet)
 
 add_custom_target(REBUILD_BINARY_INFO
-  COMMAND touch ${PICO_SDK_PATH}/src/rp2_common/pico_standard_link/binary_info.c
+  COMMAND cmake -E touch ${PICO_SDK_PATH}/src/rp2_common/pico_standard_link/binary_info.c
 )
 add_dependencies(Ultranet REBUILD_BINARY_INFO)

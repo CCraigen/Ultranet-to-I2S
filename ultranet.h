@@ -25,11 +25,11 @@
 #include "build/ultranet.pio.h"     // derived automatically from the "ultranet.pio" source file
 
 // strings for inclusion in binary info (for query by picotool)
-#define DESCRIPTION "Single Ultranet stream input (sw selected), 4xI2S stereo, 8xPWM mono"
-#define VERSION "1.2"
+#define DESCRIPTION "Single Ultranet stream input (sw selected), 4xI2S stereo, 8xPWM mono -- CC pin assignments modified"
+#define VERSION "1.2-CC"
 
 // conditional compilation switches for hardware options
-// #define DEBUG                    // enable debug code DEBUG DEBUG DEBUG
+//#define DEBUG                    // enable debug code DEBUG DEBUG DEBUG
 #define WS2812                      // Our board has a ws2812 programmable LED
 #define MCLK                        // Enable MCLK clock for I2S devices
 
@@ -43,20 +43,24 @@
 #define UNET_PIO pio0               // PIO module to use for Ultranet input
 #define UNET_SM 0                   // state machine to use for Ultranet input
 #ifdef MCLK                         // if we want an I2S MCLK clock
-    #define MCLK_PIN 24             // I2S Master Clock Pin (if used)
+    #define MCLK_PIN 2              // I2S Master Clock Pin (if used) -- originally 24
     #define MCLK_PIO pio0           // state machine for I2S master clock
     #define MCLK_SM 1               // state machine for I2S master clock
 #endif // MCLK
 // I2S outputs use second pio (pio1), four I2S outputs, 3 pins each
 #define I2S_PIO pio1                // PIO 1 is dedicated to I2S outputs (all 4 SMs)
-#define I2S1_PINS 2                 // base for I2S output pins (3 pins starting point)
-#define I2S2_PINS 5                 // base for I2S output pins (3 pins starting point)
-#define I2S3_PINS 8                 // base for I2S output pins (3 pins starting point)
-#define I2S4_PINS 17                // base for I2S output pins (3 pins starting point)
+#define I2S1_PINS 3                 // base for I2S output pins (3 pins starting point) -- originally 2
+#define I2S2_PINS 6                 // base for I2S output pins (3 pins starting point) -- originally 5
+#define I2S3_PINS 9                 // base for I2S output pins (3 pins starting point) -- originally 8
+#define I2S4_PINS 12                // base for I2S output pins (3 pins starting point) -- originally 17
 // Selector binary switch (3 pole)
-#define SELECTOR_SW_BASE 11         // base pin (switch is 3-pin, base+2) switches to ground
+#define SELECTOR_SW_BASE 27         // base pin (switch is 3-pin, base+2) switches to ground -- originally 11
 #define SW_COMM_LOW                 // switch common pin(s) are connected to 0v
 // #define SW_COMM_HIGH             // switch common pin(s) are connected to 3.3v
+
+//#define USE_SELECTOR              // use the hardware switch if defined, else use coded
+//#define HIGH_CHANNELS             // if not using USE_SELECTOR, uncomment to choose channels 9-16 instead of 1-8
+
 // ws2812 multicolour LED driving
 #ifdef WS2812
     #define WS2812_PIN 16           // chinese pico boards have ws2812 on pin 16
@@ -78,14 +82,14 @@
 // #define PICO_LED 25                 // Uncomment to use normal LED on standard PICO boards
 #define STREAM_LED_RESET 200000     // Period in us to reset stream indicator LED
 // for PWM analog audio outputs
-#define PIN_PWM_1A 14               // A channel of PWM slice (left audio)
-#define PIN_PWM_1B 15               // B channel of PWM slice (right audio)
-#define PIN_PWM_2A 20               // A channel of PWM slice (left audio)
-#define PIN_PWM_2B 21               // B channel of PWM slice (right audio)
-#define PIN_PWM_3A 26               // A channel of PWM slice (left audio)
-#define PIN_PWM_3B 27               // B channel of PWM slice (right audio)
-#define PIN_PWM_4A 28               // A channel of PWM slice (left audio)
-#define PIN_PWM_4B 29               // B channel of PWM slice (right audio)
+#define PIN_PWM_1A 17               // A channel of PWM slice (left audio) -- originally 14
+#define PIN_PWM_1B 18               // B channel of PWM slice (right audio) -- originally 15
+#define PIN_PWM_2A 19               // A channel of PWM slice (left audio) -- originally 20
+#define PIN_PWM_2B 20               // B channel of PWM slice (right audio) -- originally 21
+#define PIN_PWM_3A 21               // A channel of PWM slice (left audio) -- originally 26
+#define PIN_PWM_3B 22               // B channel of PWM slice (right audio) -- originally 27
+#define PIN_PWM_4A 23               // A channel of PWM slice (left audio) -- originally 28
+#define PIN_PWM_4B 24               // B channel of PWM slice (right audio) -- originally 29
 
 // these need to be "volatile" otherwise the compiler optimises them out!
 extern volatile uint32_t samples[8]; // array of samples read from Ultranet stream
